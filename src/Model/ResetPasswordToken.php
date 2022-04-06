@@ -138,7 +138,10 @@ final class ResetPasswordToken
             throw new \LogicException(sprintf('%s initialized without setting the $generatedAt timestamp.', self::class));
         }
 
-        $createdAtTime = \DateTimeImmutable::createFromFormat('U', (string) $this->generatedAt);
+        $createdAtTime = \DateTime::createFromFormat('U', (string) $this->generatedAt);
+        if ($createdAtTime) {
+            $createdAtTime->setTimezone($this->expiresAt->getTimezone());
+        }
 
         return $this->expiresAt->diff($createdAtTime);
     }
